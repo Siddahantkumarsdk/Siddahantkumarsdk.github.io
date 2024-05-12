@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siddahant Kumar X-Reality project- Web based 3D bar chart Visualization</title>
+    <!--D3.Js Library used for json based data conversion to N*N matrix-->
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <!--using Aframe library -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!--using Aframe library to enable AR functionality with marker based tracking called NFT (Natural Feature technology) technology  -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+</head>
+
+<body>
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+        <!-- entity using for camera-->
+        <a-entity camera></a-entity>
+        <!-- Using Hiro preset for 3D bar chart visualization-->
+        <a-marker preset="hiro">
+            <!--Id BarsContainer is basically holding 3D bars data representation-->
+            <a-entity id="barsContainer"></a-entity>
+        </a-marker>
+    </a-scene>
+
+    <script>
+        //selecting <a-scene> element and barscontainer using d3.js to fulfil the project requirement.
+        const scene = d3.select('a-scene');
+        const barsContainer = d3.select('#barsContainer');
+
+        // This is my json object which use for 3D bar chart visualization
+        const JsonDataObject = {
+            "data": [
+                [3, 5, 4, 2, 4, 4, 5, 1, 5, 5],
+                [5, 2, 4, 4, 5, 3, 1, 5, 5, 2],
+                [5, 4, 5, 1, 5, 2, 5, 3, 5, 4],
+                [1, 4, 3, 5, 5, 5, 2, 4, 5, 3],
+                [5, 5, 4, 5, 1, 5, 4, 2, 3, 5],
+                [2, 5, 1, 5, 5, 4, 3, 5, 5, 1],
+                [4, 5, 5, 3, 2, 5, 5, 5, 1, 5],
+                [5, 1, 5, 5, 3, 5, 4, 5, 2, 5],
+                [5, 3, 2, 5, 5, 1, 5, 5, 4, 5],
+                [3, 5, 4, 2, 4, 4, 5, 1, 5, 5]
+            ]
+        };
+
+        const Sizeofmatrix = JsonDataObject.data.length; // getting size of matrix from json object
+        const gap = 0.1; //setting gap
+        const Widthofbar = 0.1; //setting width 
+        const Depthofbar = 0.1; // setting depth 
+
+        // Set all the colors for bars using array DS
+        const Barscolors = ['magenta', 'lime', 'pink', 'red', 'orange', 'purple', 'cyan', 'green', 'blue', 'yellow'];
+
+        // Now looping through used data set to generate bars
+        JsonDataObject.data.forEach((rowData, Iindex) => {
+            rowData.forEach((value, Jindex) => {
+                //positing the bar using x,y & Z axis in 3D space
+                const xPosition = (Iindex - (Sizeofmatrix - 1) / 2) * (Widthofbar + gap); //centering the bars on x-axis
+                const yPosition = (value / 10) * 3; // On y-axis adjust the height of bars
+                const zPosition = -(Jindex - (Sizeofmatrix - 1) / 2) * (Depthofbar + gap); // again centering the bars z-axis
+
+                const Colorofbars = Barscolors[(Iindex + Jindex) % Barscolors.length]; // Select color from the array
+
+                //As I have to display the 3D bars so I am using box for it using AFrame and appending to the created container
+                const bar = barsContainer.append('a-box')
+                    .attr('position', `${xPosition} ${yPosition / 2} ${zPosition}`)
+                    .attr('width', Widthofbar) //setting all the dimensions of bars
+                    .attr('height', yPosition)
+                    .attr('depth', Depthofbar)
+                    .attr('color', Colorofbars); // setting the colors for bars using colors array
+
+                // And at end I am also displaying the height of every bar so for that using a-text 
+                barsContainer.append('a-text')
+                    .attr('position', `${xPosition} ${yPosition + 0.2} ${zPosition}`)
+                    .attr('value', yPosition.toFixed(2)) // rounding up the value to 2 digits
+                    .attr('align', 'center') // doing text allignment
+                    .attr('scale', '0.3 0.3 0.3'); // setting up the scale
+            });
+        });
+    </script>
+</body>
+
+</html>
