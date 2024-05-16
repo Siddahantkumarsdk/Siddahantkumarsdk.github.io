@@ -23,29 +23,28 @@
             <a-entity id="barsContainer"></a-entity>
         </a-marker>
     </a-scene>
-
+    <!--javascript used in same file-->
     <script>
         //selecting <a-scene> element and barscontainer using d3.js to fulfil the project requirement.
         const scene = d3.select('a-scene');
         const barsContainer = d3.select('#barsContainer');
 
         // This is my json object which use for 3D bar chart visualization
-        const JsonDataObject = {
-            "data": [
-                [3, 5, 4, 2, 4, 4, 5, 1, 5, 5],
-                [5, 2, 4, 4, 5, 3, 1, 5, 5, 2],
-                [5, 4, 5, 1, 5, 2, 5, 3, 5, 4],
-                [1, 4, 3, 5, 5, 5, 2, 4, 5, 3],
-                [5, 5, 4, 5, 1, 5, 4, 2, 3, 5],
-                [2, 5, 1, 5, 5, 4, 3, 5, 5, 1],
-                [4, 5, 5, 3, 2, 5, 5, 5, 1, 5],
-                [5, 1, 5, 5, 3, 5, 4, 5, 2, 5],
-                [5, 3, 2, 5, 5, 1, 5, 5, 4, 5],
-                [3, 5, 4, 2, 4, 4, 5, 1, 5, 5]
-            ]
-        };
+        const JsonDataObject = [
+            3, 5, 4, 2, 4, 4, 5, 1, 5, 5,
+            5, 2, 4, 4, 5, 3, 1, 5, 5, 2,
+            5, 4, 5, 1, 5, 2, 5, 3, 5, 4,
+            1, 4, 3, 5, 5, 5, 2, 4, 5, 3,
+            5, 5, 4, 5, 1, 5, 4, 2, 3, 5,
+            2, 5, 1, 5, 5, 4, 3, 5, 5, 1,
+            4, 5, 5, 3, 2, 5, 5, 5, 1, 5,
+            5, 1, 5, 5, 3, 5, 4, 5, 2, 5,
+            5, 3, 2, 5, 5, 1, 5, 5, 4, 5,
+            3, 5, 4, 2, 4, 4, 5, 1, 5, 5
+        ];
+        const Sizeofmatrix = Math.sqrt(JsonDataObject.length); // getting size of array data set using length property
+        const twoDmatrix = d3.range(Sizeofmatrix).map(i => JsonDataObject.slice(i * Sizeofmatrix, (i + 1) * Sizeofmatrix)); // and converting json object into 2 d matrix
 
-        const Sizeofmatrix = JsonDataObject.data.length; // getting size of matrix from json object
         const gap = 0.1; //setting gap
         const Widthofbar = 0.1; //setting width 
         const Depthofbar = 0.1; // setting depth 
@@ -54,7 +53,7 @@
         const Barscolors = ['magenta', 'lime', 'pink', 'red', 'orange', 'purple', 'cyan', 'green', 'blue', 'yellow'];
 
         // Now looping through used data set to generate bars
-        JsonDataObject.data.forEach((rowData, Iindex) => {
+        twoDmatrix.forEach((rowData, Iindex) => {
             rowData.forEach((value, Jindex) => {
                 //positing the bar using x,y & Z axis in 3D space
                 const xPosition = (Iindex - (Sizeofmatrix - 1) / 2) * (Widthofbar + gap); //centering the bars on x-axis
